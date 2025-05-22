@@ -1,0 +1,37 @@
+services:
+  node-app:
+    image: node:lts-buster-slim
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./src:/usr/src/app/src
+    container_name: ts-node-docker
+    environment:
+      - NODE_ENV=development
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    command: npm run dev
+    restart: always
+    networks:
+      - express-mongo
+  mongo:
+    restart: always
+    container_name: mongo-db
+    image: mongo:latest
+    networks:
+      - express-mongo
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+networks:
+  express-mongo:
+volumes:
+  mongo-data:
+    driver: local
